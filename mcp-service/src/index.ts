@@ -153,11 +153,15 @@ export default {
       });
     }
     if (url.pathname !== "/mcp") return new Response("Not Found", { status: 404 });
+    const corsOrigin =
+      env && typeof env === "object" && "MCP_CORS_ORIGIN" in env
+        ? String((env as { MCP_CORS_ORIGIN?: string }).MCP_CORS_ORIGIN || "").trim()
+        : "";
     return createMcpHandler(createServer(), {
       route: "/mcp",
       enableJsonResponse: true,
       corsOptions: {
-        origin: "*",
+        origin: corsOrigin || "*",
         methods: "GET,POST,DELETE,OPTIONS",
         headers: "Content-Type,Accept,Mcp-Session-Id,MCP-Protocol-Version,Last-Event-ID",
         exposeHeaders: "Mcp-Session-Id,MCP-Protocol-Version",
